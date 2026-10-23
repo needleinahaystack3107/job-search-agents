@@ -1,0 +1,41 @@
+# FICTIONAL EXAMPLE. Copy this folder to profile/ and replace with your own answers.
+# Legal and demographic answers on application forms come only from this file. The agents never
+# guess one. Exclusions are strict: only the candidate can loosen them.
+
+roles:
+  target: [Data Engineer, Analytics Engineer, ML Platform Engineer]
+  stretch: [Backend Engineer]
+  seniority: [mid, senior]
+
+locations:
+  ok: [Remote (US), New York, Chicago]
+  relocate: false
+
+pay:
+  floor_usd: 120000
+  ask_usd: 140000
+
+work_authorization:
+  authorized_to_work_in_us: true
+  needs_sponsorship_now: false
+  needs_sponsorship_later: false
+
+exclusions:
+  employers: [Current Employer Inc (fictional)]   # never apply here, never contact
+  industries: [gambling]
+  role_types: [client-facing travel roles]
+
+eeo:
+  # Leave as "decline" unless the candidate chooses otherwise.
+  gender: decline
+  race_ethnicity: decline
+  veteran: decline
+  disability: decline
+
+discretion:
+  public_posts: false        # nothing public about the search
+  notify_current_employer: false
+
+screening_defaults:
+  notice_period_weeks: 2
+  how_did_you_hear: Company careers page

@@ -1,0 +1,10 @@
+{
+  "_note": "Copy to .claude/settings.local.json. The hooks log each tool call and sub-agent start/stop to data/trace.jsonl (safe labels only) so the monitor can show which agent is doing what.",
+  "hooks": {
+    "PreToolUse": [{"matcher": "*", "hooks": [{"type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/hook_trace.py\"", "async": true, "timeout": 5}]}],
+    "PostToolUse": [{"matcher": "*", "hooks": [{"type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/hook_trace.py\"", "async": true, "timeout": 5}]}],
+    "PostToolUseFailure": [{"matcher": "*", "hooks": [{"type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/hook_trace.py\"", "async": true, "timeout": 5}]}],
+    "SubagentStart": [{"hooks": [{"type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/hook_trace.py\"", "async": true, "timeout": 5}]}],
+    "SubagentStop": [{"hooks": [{"type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/hook_trace.py\"", "async": true, "timeout": 5}]}]
+  }
+}

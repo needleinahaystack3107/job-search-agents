@@ -1,0 +1,16 @@
+{
+  "_note": "Filters for scripts/jobs.py. All patterns are case-insensitive regular expressions unless the key says otherwise. Edit these for your own search.",
+  "title_core": "data engineer|analytics engineer|machine learning engineer|\\bml engineer|\\bai engineer|mlops|data platform|ml platform",
+  "title_stretch": "software engineer|backend engineer|platform engineer|infrastructure engineer",
+  "title_exclude": "\\bintern\\b|internship|new grad|\\bstaff\\b|principal|director|\\bvp\\b|head of|manager|sales|recruit|frontend|ios|android|hardware|embedded",
+  "location_include": "remote|united states|\\busa\\b|new york|san francisco|seattle|austin|chicago",
+  "location_include_case_sensitive": ", ?(CA|NY|WA|TX|IL)\\b|\\bUS\\b",
+  "location_exclude": "\\bemea\\b|\\bapac\\b|\\blatam\\b",
+  "skill_keywords": ["python", "sql", "spark", "dbt", "airflow", "docker", "kubernetes", "aws", "gcp", "terraform", "postgres", "llm", "rag", "pipeline", "etl", "mlops"],
+  "client_facing_title": "",
+  "client_facing_text": "",
+  "us_pay_floor_usd": 0,
+  "needs_sponsorship": false,
+  "visa_transfer_ok": false,
+  "no_sponsorship": "(unable|not able|cannot|do(es)? not|will not|no)\\W+(to\\W+)?(provide\\W+|offer\\W+)?(visa\\W+|employment\\W+)*sponsor|without (current or future )?(employer |visa )?sponsorship"
+}

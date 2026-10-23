@@ -1,0 +1,20 @@
+# Personal data: never commit
+/profile/
+/data/
+/applications/
+/drafts/
+/inputs/
+/reports/
+*.db
+*.db-journal
+trace*.jsonl
+trace-run.txt
+trace-agents.json
+
+# Local Claude Code settings
+.claude/settings.local.json
+
+# Python / OS
+__pycache__/
+*.pyc
+.DS_Store

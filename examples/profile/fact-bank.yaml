@@ -1,0 +1,64 @@
+# FICTIONAL EXAMPLE. Copy this folder to profile/ and replace everything with your own facts.
+# The fact bank is the only source a resume or cover letter may draw from. Every bullet the Writer
+# produces must trace to an entry here; the Verifier's fact-check rejects anything that does not.
+#
+# status: resume  = already on a resume you have used
+#         stated  = you said it in an intake conversation
+#         repo    = shown in a public repository
+# open:   things a resume bullet would need that you have not said yet. Not usable until answered.
+
+person:
+  name: Alex Example
+  email: alex@example.com
+  phone: "+1 555 0100"
+  location: Springfield, USA
+  links:
+    github: https://github.com/example
+  headline: Data engineer, 5 years, batch and streaming pipelines
+
+experience:
+  - id: northwind
+    employer: Northwind Data (fictional)
+    title: Data Engineer
+    start: 2022-03
+    end: present
+    facts:
+      - id: northwind-pipeline
+        status: resume
+        text: Built the nightly order pipeline in Python and Spark that feeds finance reporting.
+        tools: [python, spark, airflow, aws]
+        metric: cut nightly run time from 5 hours to 70 minutes
+        own_part: designed and built it; one other engineer reviewed
+      - id: northwind-dbt
+        status: stated
+        text: Moved 40 reporting models from hand-written SQL scripts to dbt with tests.
+        tools: [dbt, sql, postgres]
+        open:
+          - How many failed loads did the tests catch in the first quarter?
+  - id: contoso
+    employer: Contoso Health (fictional)
+    title: Analyst, then Junior Data Engineer
+    start: 2019-07
+    end: 2022-02
+    facts:
+      - id: contoso-etl
+        status: resume
+        text: Wrote ETL jobs that loaded clinic visit data into the warehouse each morning.
+        tools: [python, sql]
+
+projects:
+  - id: rag-notes
+    status: repo
+    text: Side project - a small retrieval tool over personal notes using embeddings and an LLM.
+    tools: [python, llm, rag]
+
+education:
+  - degree: B.S. Computer Science
+    school: Springfield State University (fictional)
+    year: 2019
+
+skills:
+  evidenced: [python, sql, spark, airflow, dbt, aws, postgres]
+  stated_no_project: [docker]
+  light_exposure: [kubernetes, terraform]
+  listed_on_resume_without_evidence_yet: []
