@@ -90,6 +90,17 @@ builder (`scripts/resume_doc.py`) writes DOCX files without extra packages.
    ```
 6. In Claude Code, say "run my job search".
 
+## Using it with Codex or another agent
+
+Nothing here needs Claude Code except the optional per-tool trace hooks. The skills are plain
+Markdown procedures and the scripts are standard-library Python.
+
+- [AGENTS.md](AGENTS.md) is the entry point for Codex and other agents: the rules, how to follow
+  a skill, and how to run the Scout, Writer and Verifier roles as separate sessions.
+- [.claude/skills/README.md](.claude/skills/README.md) indexes every skill in pipeline order,
+  with what each reads and writes.
+- [scripts/README.md](scripts/README.md) documents every command.
+
 ## Principles
 
 - **Truthful.** The fact bank is the only source of claims. Nothing is inferred or inflated; gaps
