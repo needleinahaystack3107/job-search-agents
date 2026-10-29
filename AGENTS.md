@@ -54,7 +54,7 @@ job-discover -> job-score -> resume-tailor -> quality-gate -> review queue -> ap
 
 Start from `.claude/skills/job-search-run/SKILL.md`, which runs the whole day.
 
-## Roles (Scout, Writer, Verifier)
+## Roles (Discoverer, Scorer, Writer, Verifier)
 
 The pipeline is split into roles so job descriptions and drafts do not crowd one context, and
 so the reviewer is not the author. Role prompts are in `.claude/agents/*.md`; the mapping is in
@@ -63,7 +63,8 @@ so the reviewer is not the author. Role prompts are in `.claude/agents/*.md`; th
 | Role | Skills | Rule |
 |---|---|---|
 | HQ (main session) | job-search-run, apply-assist, application-tracker, feedback-learn, profile-intake | The only role that talks to the candidate |
-| Scout | job-discover, job-score | Returns a ranked table only |
+| Discoverer | job-discover | Reads no job descriptions; returns counts and scoring batches |
+| Scorer | job-score | One per batch, in parallel; returns a ranked table only |
 | Writer | resume-tailor, cover-letter | Uses only the fact bank |
 | Verifier | quality-gate and its four passes | Never checks a packet it wrote |
 
@@ -73,7 +74,11 @@ so the reviewer is not the author. Role prompts are in `.claude/agents/*.md`; th
 Verifier still reads the packet fresh. For example:
 
 ```bash
-codex exec "Act as the Scout described in .claude/agents/scout.md. Run job-discover, then job-score on the shortlist."
+codex exec "Act as the Discoverer in .claude/agents/discoverer.md. Run job-discover and return the scoring batches."
+```
+
+```bash
+codex exec "Act as a Scorer in .claude/agents/scorer.md. Run job-score on these keys: <KEY>, <KEY>."
 ```
 
 ```bash

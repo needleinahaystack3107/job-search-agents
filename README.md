@@ -8,7 +8,7 @@ application forms for you to review. You approve every submission.
 This repo is the framework only. It ships with a clearly fictional example candidate and a demo
 data generator. Your own profile, job database, applications and traces stay in git-ignored folders.
 
-![Tactical map: HQ, Scout, Writer and Verifier with live handoffs](docs/monitor-map.jpg)
+![Tactical map: HQ, Discoverer, Scorers, Writer and Verifier with live handoffs](docs/monitor-map.jpg)
 
 ## Architecture
 
@@ -18,8 +18,9 @@ data generator. Your own profile, job database, applications and traces stay in 
         HQ (main session) -- job-search-run, apply-assist, application-tracker,
              |                feedback-learn, profile-intake
              v
-          Scout -----------> Writer -----------> Verifier ---------> HQ review queue
-   job-discover, job-score   resume-tailor,      quality-gate:        you approve, HQ fills
+   Discoverer -> Scorers ---> Writer -----------> Verifier ---------> HQ review queue
+   job-discover  job-score   resume-tailor,      quality-gate:        you approve, HQ fills
+                 (parallel)
                              cover-letter        fact-check, humanize, the form, you submit
                                                  recruiter-read, ats-check
                                   ^                    |
@@ -28,9 +29,12 @@ data generator. Your own profile, job database, applications and traces stay in 
 
 - **HQ (main session).** The only part that talks to you. Runs the day, presents the review
   queue, fills approved forms, records outcomes and your feedback.
-- **Scout** (`.claude/agents/scout.md`). Polls the watchlist through public Greenhouse, Lever and
-  Ashby board APIs, applies your strict exclusions, scores each posting and returns a ranked table.
-  Job descriptions stay in its context, not HQ's.
+- **Discoverer** (`.claude/agents/discoverer.md`). Polls the watchlist through public Greenhouse,
+  Lever and Ashby board APIs, runs the pre-filter and splits the shortlist into batches of about
+  10, one company per batch. It reads no job descriptions.
+- **Scorers** (`.claude/agents/scorer.md`). One per batch, in parallel. Each reads its postings and
+  application forms in full, applies your strict exclusions, scores them and returns a ranked
+  table. Job descriptions stay in their contexts, not HQ's, and each context stays small.
 - **Writer** (`.claude/agents/writer.md`). Tailors a resume (and a cover letter when a form asks
   for one) using only `profile/fact-bank.yaml`, in your voice from `profile/voice.md`.
 - **Verifier** (`.claude/agents/verifier.md`). Checks a packet it did not write, in a fresh
@@ -96,7 +100,7 @@ Nothing here needs Claude Code except the optional per-tool trace hooks. The ski
 Markdown procedures and the scripts are standard-library Python.
 
 - [AGENTS.md](AGENTS.md) is the entry point for Codex and other agents: the rules, how to follow
-  a skill, and how to run the Scout, Writer and Verifier roles as separate sessions.
+  a skill, and how to run the Discoverer, Scorer, Writer and Verifier roles as separate sessions.
 - [.claude/skills/README.md](.claude/skills/README.md) indexes every skill in pipeline order,
   with what each reads and writes.
 - [scripts/README.md](scripts/README.md) documents every command.
@@ -116,7 +120,7 @@ Markdown procedures and the scripts are standard-library Python.
 ## Credits
 
 Designed and directed by the repository owner: the requirements, the quality bars, the
-Scout / Writer / Verifier split, the KPIs and the monitoring approach. Most of the code was written
+Discoverer / Scorer / Writer / Verifier split, the KPIs and the monitoring approach. Most of the code was written
 by Claude Code under that direction.
 
 ## License

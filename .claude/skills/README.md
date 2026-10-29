@@ -9,8 +9,8 @@ matching `SKILL.md` and follow it; see [AGENTS.md](../../AGENTS.md).
 | # | Skill | Role | What it does | Reads | Writes |
 |---|---|---|---|---|---|
 | 0 | [job-search-run](job-search-run/SKILL.md) | HQ | Runs the whole day, start to review queue | everything below | review queue |
-| 1 | [job-discover](job-discover/SKILL.md) | Scout | Polls the watchlist's public job boards; adds a pasted posting | `data/watchlist.csv`, `config/discovery.json` | `data/jobs.db` |
-| 2 | [job-score](job-score/SKILL.md) | Scout | Reads postings in full, applies exclusions, scores fit 0-100 | `data/jobs.db`, `profile/` | scores and statuses in `data/jobs.db` |
+| 1 | [job-discover](job-discover/SKILL.md) | Discoverer | Polls the watchlist's public job boards; adds a pasted posting | `data/watchlist.csv`, `config/discovery.json` | `data/jobs.db` |
+| 2 | [job-score](job-score/SKILL.md) | Scorer | Reads postings in full, applies exclusions, scores fit 0-100 | `data/jobs.db`, `profile/` | scores and statuses in `data/jobs.db` |
 | 3 | [resume-tailor](resume-tailor/SKILL.md) | Writer | One-page resume for one posting, fact bank only | `profile/`, the posting | `applications/<folder>/resume.md`, `match.md`, `answers.md` |
 | 3a | [cover-letter](cover-letter/SKILL.md) | Writer | Cover letter or free-text answer, only when a form asks | `profile/`, the posting | `applications/<folder>/` |
 | 4 | [quality-gate](quality-gate/SKILL.md) | Verifier | Runs the four passes below and sets the verdict | the packet | `applications/<folder>/review.md` |

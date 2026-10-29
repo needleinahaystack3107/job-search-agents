@@ -1,12 +1,102 @@
 {
-  "_note": "How skills map to agents. Scout, Writer and Verifier are project agents in .claude/agents/ with their own context; the main session (HQ) keeps everything that talks to the candidate. The monitor draws this graph.",
+  "_note": "How skills map to agents. Discoverer, Scorer, Writer and Verifier are project agents in .claude/agents/ with their own context; the main session (HQ) keeps everything that talks to the candidate. The monitor draws this graph.",
   "agents": [
-    {"id": "main", "name": "Main session", "kind": "session", "skills": ["job-search-run", "apply-assist", "application-tracker", "feedback-learn", "profile-intake"], "role": "Talks to you, runs the day, fills forms, records outcomes"},
-    {"id": "scout", "name": "Scout", "kind": "subagent", "skills": ["job-discover", "job-score"], "role": "Finds postings and ranks them"},
-    {"id": "writer", "name": "Writer", "kind": "subagent", "skills": ["resume-tailor", "cover-letter"], "role": "Tailors resume and letters from the fact bank"},
-    {"id": "verifier", "name": "Verifier", "kind": "subagent", "skills": ["quality-gate", "fact-check", "humanize", "recruiter-read", "ats-check"], "role": "Independent quality gate"}
+    {
+      "id": "main",
+      "name": "Main session",
+      "kind": "session",
+      "skills": [
+        "job-search-run",
+        "apply-assist",
+        "application-tracker",
+        "feedback-learn",
+        "profile-intake"
+      ],
+      "role": "Talks to you, runs the day, fills forms, records outcomes"
+    },
+    {
+      "id": "discoverer",
+      "name": "Discoverer",
+      "kind": "subagent",
+      "skills": [
+        "job-discover"
+      ],
+      "role": "Finds postings, pre-filters, batches the shortlist"
+    },
+    {
+      "id": "scorer",
+      "name": "Scorer",
+      "kind": "subagent",
+      "skills": [
+        "job-score"
+      ],
+      "role": "Scores one batch; several run in parallel"
+    },
+    {
+      "id": "writer",
+      "name": "Writer",
+      "kind": "subagent",
+      "skills": [
+        "resume-tailor",
+        "cover-letter"
+      ],
+      "role": "Tailors resume and letters from the fact bank"
+    },
+    {
+      "id": "verifier",
+      "name": "Verifier",
+      "kind": "subagent",
+      "skills": [
+        "quality-gate",
+        "fact-check",
+        "humanize",
+        "recruiter-read",
+        "ats-check"
+      ],
+      "role": "Independent quality gate"
+    }
   ],
-  "flow": [["main", "scout"], ["scout", "writer"], ["writer", "verifier"], ["verifier", "main"], ["verifier", "writer"]],
-  "kpi": {"target_applications_per_day": 3, "baseline_per_day": 1, "guards": {"fact_check_failures": 0, "min_voice": 8, "min_recruiter": 7},
-          "context_target_pct": {"helpers": [30, 40], "main": "may run higher when the candidate talks with HQ a lot", "_note": "keep helper agents' context low so they do not hallucinate from crowded context"}}
+  "flow": [
+    [
+      "main",
+      "discoverer"
+    ],
+    [
+      "discoverer",
+      "scorer"
+    ],
+    [
+      "scorer",
+      "writer"
+    ],
+    [
+      "writer",
+      "verifier"
+    ],
+    [
+      "verifier",
+      "main"
+    ],
+    [
+      "verifier",
+      "writer"
+    ]
+  ],
+  "kpi": {
+    "target_applications_per_day": 3,
+    "baseline_per_day": 1,
+    "guards": {
+      "fact_check_failures": 0,
+      "min_voice": 8,
+      "min_recruiter": 7
+    },
+    "context_target_pct": {
+      "helpers": [
+        30,
+        40
+      ],
+      "main": "may run higher when the candidate talks with HQ a lot",
+      "_note": "keep helper agents' context low so they do not hallucinate from crowded context"
+    }
+  }
 }

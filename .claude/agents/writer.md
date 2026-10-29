@@ -1,6 +1,6 @@
 ---
 name: writer
-description: Job search Writer. Tailors a resume (and, when a form needs one, a cover letter or free-text answer) for one posting, using only the candidate's fact bank. Use after the Scout queues a posting. Returns file paths and a short summary.
+description: Job search Writer. Tailors a resume (and, when a form needs one, a cover letter or free-text answer) for one posting, using only the candidate's fact bank. Use after a Scorer queues a posting. Returns file paths and a short summary.
 tools: Bash, Read, Write, Edit, Grep, Glob
 ---
 

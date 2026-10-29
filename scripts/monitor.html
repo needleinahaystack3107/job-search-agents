@@ -89,13 +89,13 @@ td{padding:5px 6px;border-bottom:1px dashed var(--grid);vertical-align:top;color
   <section class="p span3"><h2>STORE <span>BY STATUS</span></h2><div id="store"></div></section>
 </main>
 <script>
-const P={main:[130,215],scout:[400,78],writer:[670,215],verifier:[400,352]};
-const CS={main:"HQ",scout:"SCOUT",writer:"WRITER",verifier:"VERIFIER"};
+const P={main:[130,215],discoverer:[300,78],scorer:[530,78],writer:[670,215],verifier:[400,352]};
+const CS={main:"HQ",discoverer:"DISCOVERER",scorer:"SCORERS",writer:"WRITER",verifier:"VERIFIER"};
 const KC={shell:"#5dff9a",file:"#b6ffd0",web:"#49d6ff",browser:"#ffb627",agent:"#ff7ad9",skill:"#c08cff",voice:"#8fa3ff",mcp:"#e6e69a",other:"#6f8f7a"};
-const LANES=["main","scout","writer","verifier"];
+const LANES=["main","discoverer","scorer","writer","verifier"];
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const $=id=>document.getElementById(id);
-const NAME={main:"HQ",scout:"Scout",writer:"Writer",verifier:"Verifier"};
+const NAME={main:"HQ",discoverer:"Discoverer",scorer:"Scorer",writer:"Writer",verifier:"Verifier"};
 const SKILL={"job-search-run":"the daily run","job-discover":"finding new jobs","job-score":"scoring jobs","resume-tailor":"writing the resume","cover-letter":"writing a cover letter","quality-gate":"the quality check","fact-check":"the fact check","humanize":"the voice check","recruiter-read":"the recruiter read","ats-check":"the ATS check","apply-assist":"filling the form","application-tracker":"logging the application","feedback-learn":"learning from feedback","profile-intake":"updating your profile"};
 const sk=k=>SKILL[k]||k;
 const company=key=>{const p=(key||"").split(":");if(p.length<2)return"";const s=p[0]==="manual"?(p[1].split("-")[3]||p[1]):p[1];return s.replace(/usa$|work$|labs$|security$|health$/,m=>m==="health"?" Health":"").replace(/^./,c=>c.toUpperCase())};
@@ -200,7 +200,7 @@ function hist(ap,t){
   $("hist").innerHTML=h}
 
 function logLine(e){
-  const who=NAME[{"job-search-run":"main","apply-assist":"main","application-tracker":"main","feedback-learn":"main","profile-intake":"main","job-discover":"scout","job-score":"scout","resume-tailor":"writer","cover-letter":"writer"}[e.skill]||(e.skill?"verifier":"main")];
+  const who=NAME[{"job-search-run":"main","apply-assist":"main","application-tracker":"main","feedback-learn":"main","profile-intake":"main","job-discover":"discoverer","job-score":"scorer","resume-tailor":"writer","cover-letter":"writer"}[e.skill]||(e.skill?"verifier":"main")];
   const co=company(e.job),about=co?` for ${co}`:"",q=plain(e.q);
   if(e.event==="run")return`A new run started${e.note?": "+e.note:""}.`;
   if(e.event==="start")return`${who} started ${sk(e.skill)}${about}.`;

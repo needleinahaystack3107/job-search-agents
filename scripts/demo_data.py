@@ -5,7 +5,7 @@
 
 Writes data/jobs.db, data/application-log.csv, data/trace.jsonl and data/trace-run.txt. Every
 company, title and event is made up. The trace ends at the current time, so the monitor shows a
-run in progress: Scout has handed off, Writer is drafting, Verifier is checking. Standard library only.
+run in progress: the Scorers have handed off, Writer is drafting, Verifier is checking. Standard library only.
 """
 import argparse, csv, datetime, json, os, random, sys
 
@@ -111,22 +111,28 @@ def make_trace(rng, now):
     tr.add(event="start", skill="job-search-run")
     tr.tool("main", "Skill", "skill", "job-search-run", 2)
 
-    # Scout: discover and score.
-    tr.tool("main", "Agent", "agent", "scout: discover and score today's postings", 2)
-    tr.add(event="agent_start", agent="scout", agent_id="demo-scout")
+    # Discoverer: poll, pre-filter, batch.
+    tr.tool("main", "Agent", "agent", "discoverer: find and batch today's postings", 2)
+    tr.add(event="agent_start", agent="discoverer", agent_id="demo-discoverer")
     tr.add(event="start", skill="job-discover")
-    tr.tool("scout", "Bash", "shell", "Poll watchlist job boards", 25)
+    tr.tool("discoverer", "Bash", "shell", "Poll watchlist job boards", 25)
+    tr.tool("discoverer", "Bash", "shell", "List unscored postings", 3)
     tr.add(event="end", skill="job-discover", q={"polled": 10, "new": 14, "failed": 0})
+    tr.add(event="handoff", skill="job-discover", to="job-score", q={"batch": 1, "keys": 14})
+    tr.add(event="agent_stop", agent="discoverer", agent_id="demo-discoverer")
+
+    # Scorer: score the batch.
+    tr.tool("main", "Agent", "agent", "scorer: score batch 1", 2)
+    tr.add(event="agent_start", agent="scorer", agent_id="demo-scorer-1")
     tr.add(event="start", skill="job-score")
-    tr.tool("scout", "Bash", "shell", "List unscored postings", 3)
     for _ in range(4):
-        tr.tool("scout", "Bash", "shell", "Show one posting", 6)
-        tr.tool("scout", "Bash", "shell", "Save score and verdict", 2)
+        tr.tool("scorer", "Bash", "shell", "Show one posting", 6)
+        tr.tool("scorer", "Bash", "shell", "Save score and verdict", 2)
     tr.add(event="end", skill="job-score", q={"scored": 14, "queued": 2, "maybes": 3, "skipped": 9})
     tr.add(event="handoff", skill="job-score", to="resume-tailor", job="greenhouse:wingtiplabs:1004", q={"score": 86})
     tr.add(event="handoff", skill="job-score", to="resume-tailor", job="greenhouse:northwinddata:1000", q={"score": 81})
     tr.step(2)
-    tr.add(event="agent_stop", agent="scout", agent_id="demo-scout")
+    tr.add(event="agent_stop", agent="scorer", agent_id="demo-scorer-1")
 
     # Writer and Verifier: first packet complete.
     job = "greenhouse:wingtiplabs:1004"

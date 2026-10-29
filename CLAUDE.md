@@ -36,7 +36,8 @@ Edit this file for your own search: the rules below are the defaults the skills 
 
 ## Agents and monitoring
 
-- Project agents in `.claude/agents/`: `scout` (job-discover, job-score), `writer`
+- Project agents in `.claude/agents/`: `discoverer` (job-discover, pre-filter, batching), `scorer`
+  (job-score, one per batch, in parallel), `writer`
   (resume-tailor, cover-letter), `verifier` (quality-gate and its four passes). The main session
   (HQ) keeps everything that talks to the candidate. Grouping is in `config/agents.json`.
 - Hooks (copy `.claude/settings.example.json` to `.claude/settings.local.json`) run

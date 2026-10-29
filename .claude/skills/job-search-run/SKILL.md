@@ -13,7 +13,9 @@ Read `CLAUDE.md` first for the standing rules.
    `.claude/launch.json`). Log your own steps with `scripts/trace.py`; the agents log theirs, and
    the hooks log every tool call.
 
-**Agents.** Discovery and scoring go to the `scout` agent. Tailoring goes to the `writer` agent,
+**Agents.** Discovery, the pre-filter and batching go to one `discoverer` agent. Scoring goes to
+`scorer` agents, one per batch, run in parallel; merge their tables into one ranking. Tailoring
+goes to the `writer` agent,
 one per posting. The quality gate goes to the `verifier` agent, one per packet, after its writer
 is done. Spawn them with the Agent tool so job descriptions and drafts stay out of the main
 session's context. Everything that talks to the candidate (questions, forms, the tracker) stays in
@@ -22,9 +24,10 @@ the main session; relay the agents' questions.
 1. **Check usage.** Report plan usage. If it is high, say so and ask before continuing.
 2. **Tracker first.** With `application-tracker`, show what is `ready`, `flagged` or `queued`, and
    how many applications went out today.
-3. **Discover** with `job-discover` (scout), unless it already ran today.
-4. **Pre-filter, then score** with `job-score` (scout): `python3 scripts/jobs.py prefilter`, check
-   the reasons, then `--apply`; score at most 30 postings per run, newest first.
+3. **Discover** with `job-discover` (discoverer), unless it already ran today.
+4. **Pre-filter, then score**: the discoverer runs `python3 scripts/jobs.py prefilter`, checks
+   the reasons, then `--apply`, and splits the shortlist (at most 30, newest first) into batches
+   of about 10, one company per batch; one `scorer` per batch runs `job-score`.
 5. **Pick** the highest-scoring `queued` postings, one per company at a time.
 6. **Tailor** each with `resume-tailor` (writer), then `quality-gate` (verifier).
 7. **Present the review queue**: verdict, score, gaps, screening answers, links to `resume.md` and

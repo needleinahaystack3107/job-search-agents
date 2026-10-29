@@ -2,7 +2,7 @@
 
   python3 scripts/monitor.py            serve on http://127.0.0.1:8765 (local only)
 
-Shows the agent graph (HQ / main session, Scout, Writer, Verifier), lights up whichever skill is
+Shows the agent graph (HQ / main session, Discoverer, Scorers, Writer, Verifier), lights up whichever skill is
 running, draws each handoff with the quality it carried, and shows the KPIs. The page is
 scripts/monitor.html; data comes from scripts/kpi.py (trace, application log, job store).
 Binds to 127.0.0.1 so nothing is reachable from outside this machine.
