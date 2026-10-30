@@ -89,13 +89,13 @@ td{padding:5px 6px;border-bottom:1px dashed var(--grid);vertical-align:top;color
   <section class="p span3"><h2>STORE <span>BY STATUS</span></h2><div id="store"></div></section>
 </main>
 <script>
-const P={main:[130,215],discoverer:[300,78],scorer:[530,78],writer:[670,215],verifier:[400,352]};
-const CS={main:"HQ",discoverer:"DISCOVERER",scorer:"SCORERS",writer:"WRITER",verifier:"VERIFIER"};
+const P={main:[130,215],discoverer:[300,78],scorer:[530,78],writer:[670,215],verifier:[400,352],filler:[160,352]};
+const CS={main:"HQ",discoverer:"DISCOVERER",scorer:"SCORERS",writer:"WRITER",verifier:"VERIFIER",filler:"FILLERS"};
 const KC={shell:"#5dff9a",file:"#b6ffd0",web:"#49d6ff",browser:"#ffb627",agent:"#ff7ad9",skill:"#c08cff",voice:"#8fa3ff",mcp:"#e6e69a",other:"#6f8f7a"};
-const LANES=["main","discoverer","scorer","writer","verifier"];
+const LANES=["main","discoverer","scorer","writer","verifier","filler"];
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const $=id=>document.getElementById(id);
-const NAME={main:"HQ",discoverer:"Discoverer",scorer:"Scorer",writer:"Writer",verifier:"Verifier"};
+const NAME={main:"HQ",discoverer:"Discoverer",scorer:"Scorer",writer:"Writer",verifier:"Verifier",filler:"Filler"};
 const SKILL={"job-search-run":"the daily run","job-discover":"finding new jobs","job-score":"scoring jobs","resume-tailor":"writing the resume","cover-letter":"writing a cover letter","quality-gate":"the quality check","fact-check":"the fact check","humanize":"the voice check","recruiter-read":"the recruiter read","ats-check":"the ATS check","apply-assist":"filling the form","application-tracker":"logging the application","feedback-learn":"learning from feedback","profile-intake":"updating your profile"};
 const sk=k=>SKILL[k]||k;
 const company=key=>{const p=(key||"").split(":");if(p.length<2)return"";const s=p[0]==="manual"?(p[1].split("-")[3]||p[1]):p[1];return s.replace(/usa$|work$|labs$|security$|health$/,m=>m==="health"?" Health":"").replace(/^./,c=>c.toUpperCase())};
@@ -170,7 +170,7 @@ function map(s){
   $("map").innerHTML=h}
 
 function lanes(s){
-  const T=s.tools||{tail:[],active_tools:[]},W=1000,H=190,L=110,R=16,top=12,lh=42,span=10*60e3,now=Date.now();
+  const T=s.tools||{tail:[],active_tools:[]},W=1000,H=190,L=110,R=16,top=12,lh=Math.floor((H-top-14)/LANES.length),span=10*60e3,now=Date.now();
   const x=ts=>L+(W-L-R)*(1-(now-Date.parse(ts))/span);let h="";
   LANES.forEach((a,i)=>{const y=top+i*lh;h+=`<g class="lane"><rect x="${L}" y="${y}" width="${W-L-R}" height="${lh-8}" fill="rgba(93,255,154,.03)" stroke="var(--grid)"/><text x="8" y="${y+lh/2}">${CS[a]}</text></g>`});
   for(let m=0;m<=10;m+=2){const xx=L+(W-L-R)*(1-m/10);h+=`<line x1="${xx}" x2="${xx}" y1="${top}" y2="${top+LANES.length*lh-8}" stroke="var(--grid)" stroke-dasharray="2 4"/><text x="${xx}" y="${H-4}" text-anchor="middle" fill="var(--dim)" font-size="9">${m?m+" min ago":"now"}</text>`}

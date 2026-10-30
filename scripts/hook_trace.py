@@ -13,7 +13,7 @@ from urllib.parse import urlparse
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TRACE = os.environ.get("JOBSEARCH_TRACE") or os.path.join(ROOT, "data", "trace.jsonl")  # override for tests
 AGENTS = os.path.join(ROOT, "data", "trace-agents.json")  # agent_id -> agent_type
-KNOWN = {"discoverer", "scorer", "writer", "verifier"}
+KNOWN = {"discoverer", "scorer", "writer", "verifier", "filler"}
 
 
 def label(tool, ti):
