@@ -31,15 +31,24 @@ Re-read the files from disk before each pass, as if you had not written them. In
 | Recruiter read | 7 out of 10 or higher, and no unanswered hesitation about a must-have. |
 | ATS | All parsing checks pass; missing keywords are real gaps only. |
 
-- **Ready**: every bar met. Set the job to `ready`.
+Sort requirements into hard and soft with the rules in `job-score`. A soft gap does not block
+"ready": list it under **Risks** with the screening answer that covers it. Hard gaps count only
+in the required qualifications; duties not yet done are risks. When the candidate needs
+sponsorship and the posting and form are silent, the truthful "Yes" is a risk, not a flag; only an
+explicit refusal, a required existing right to work, or a citizenship or clearance requirement
+flags.
+
+- **Ready**: every bar met; only soft gaps remain. Set the job to `ready`.
 - **Revise**: a bar missed that reordering, cutting or rewording can fix. Fix and re-run; at most
   two rounds.
-- **Flagged**: still failing, or failing for a reason wording cannot fix (a must-have gap, a
-  likely knock-out answer, a fact that needs the candidate). Set the job to `flagged`.
+- **Needs you**: the bars are met or would be, but a fact, a sign-off or an answer only the
+  candidate can give is missing. Set `needs-you` and put the question at the top of `review.md`.
+- **Flagged**: still failing, or failing for a reason wording cannot fix (a hard must-have gap,
+  a likely knock-out answer). Set the job to `flagged`.
 
 ## Scorecard (top of review.md)
 
-The verdict and one-line reason; each pass's result; gaps stated plainly; screening answers; what
+The verdict and one-line reason; each pass's result; hard gaps stated plainly; risks (soft gaps); screening answers; what
 changed from the base resume; questions for the candidate; content that would help next time.
 
 ## When the candidate sends a flagged packet

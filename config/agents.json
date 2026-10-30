@@ -1,5 +1,5 @@
 {
-  "_note": "How skills map to agents. Discoverer, Scorer, Writer and Verifier are project agents in .claude/agents/ with their own context; the main session (HQ) keeps everything that talks to the candidate. The monitor draws this graph.",
+  "_note": "How skills map to agents. Discoverer, Scorer, Writer, Verifier and Filler are project agents in .claude/agents/ with their own context; the main session (HQ) keeps everything that talks to the candidate. The monitor draws this graph.",
   "agents": [
     {
       "id": "main",
@@ -12,7 +12,7 @@
         "feedback-learn",
         "profile-intake"
       ],
-      "role": "Talks to you, runs the day, fills forms, records outcomes"
+      "role": "Talks to you, runs the day, asks every form question, hands over, records outcomes"
     },
     {
       "id": "discoverer",
@@ -54,6 +54,15 @@
         "ats-check"
       ],
       "role": "Independent quality gate"
+    },
+    {
+      "id": "filler",
+      "name": "Filler",
+      "kind": "subagent",
+      "skills": [
+        "apply-assist"
+      ],
+      "role": "Fills one approved form in its own tab; several run in parallel; stops before Submit"
     }
   ],
   "flow": [
@@ -80,6 +89,14 @@
     [
       "verifier",
       "writer"
+    ],
+    [
+      "main",
+      "filler"
+    ],
+    [
+      "filler",
+      "main"
     ]
   ],
   "kpi": {

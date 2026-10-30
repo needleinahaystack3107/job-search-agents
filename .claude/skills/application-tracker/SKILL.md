@@ -10,7 +10,7 @@ event log in `data/application-log.csv` with columns `date,key,company,title,eve
 
 ## Statuses
 
-`new` → `scored` / `skipped` / `excluded` → `queued` → `ready` or `flagged` (or
+`new` → `scored` / `skipped` / `excluded` → `queued` → `ready`, `needs-you` or `flagged` (or
 `approved-override`) → `submitted` → `rejected`, `interview`, `offer` or `no-response`. `closed`
 means the posting was taken down before an application.
 
@@ -25,6 +25,6 @@ means the posting was taken down before an application.
 
 ## Report
 
-Review queue (`ready` and `flagged`, each with its verdict and `review.md`), counts by status,
+Review queue (`needs-you` first with its question, then `ready` and `flagged`, each with its verdict and `review.md`), counts by status,
 submissions this week, and response rate. Under about 20 submissions, a response rate is noise;
 say so.

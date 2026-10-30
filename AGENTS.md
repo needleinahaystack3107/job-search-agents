@@ -54,7 +54,7 @@ job-discover -> job-score -> resume-tailor -> quality-gate -> review queue -> ap
 
 Start from `.claude/skills/job-search-run/SKILL.md`, which runs the whole day.
 
-## Roles (Discoverer, Scorer, Writer, Verifier)
+## Roles (Discoverer, Scorer, Writer, Verifier, Filler)
 
 The pipeline is split into roles so job descriptions and drafts do not crowd one context, and
 so the reviewer is not the author. Role prompts are in `.claude/agents/*.md`; the mapping is in
@@ -67,6 +67,7 @@ so the reviewer is not the author. Role prompts are in `.claude/agents/*.md`; th
 | Scorer | job-score | One per batch, in parallel; returns a ranked table only |
 | Writer | resume-tailor, cover-letter | Uses only the fact bank |
 | Verifier | quality-gate and its four passes | Never checks a packet it wrote |
+| Filler | apply-assist | One per approved form, in parallel, in its own browser tab; never submits |
 
 **In Claude Code** these are sub-agents, started automatically.
 

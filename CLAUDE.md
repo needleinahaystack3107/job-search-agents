@@ -38,8 +38,10 @@ Edit this file for your own search: the rules below are the defaults the skills 
 
 - Project agents in `.claude/agents/`: `discoverer` (job-discover, pre-filter, batching), `scorer`
   (job-score, one per batch, in parallel), `writer`
-  (resume-tailor, cover-letter), `verifier` (quality-gate and its four passes). The main session
-  (HQ) keeps everything that talks to the candidate. Grouping is in `config/agents.json`.
+  (resume-tailor, cover-letter), `verifier` (quality-gate and its four passes), `filler`
+  (apply-assist, one per approved form, in parallel, each in its own browser tab). The main session
+  (HQ) keeps everything that talks to the candidate: it asks every form question up front,
+  starts the fillers, and hands over once. Grouping is in `config/agents.json`.
 - Hooks (copy `.claude/settings.example.json` to `.claude/settings.local.json`) run
   `scripts/hook_trace.py` on every tool call and sub-agent start/stop. They log safe labels only
   (descriptions, file names, hosts), never form values or message contents.

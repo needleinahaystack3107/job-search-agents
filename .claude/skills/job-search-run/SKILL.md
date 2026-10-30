@@ -17,7 +17,7 @@ Read `CLAUDE.md` first for the standing rules.
 `scorer` agents, one per batch, run in parallel; merge their tables into one ranking. Tailoring
 goes to the `writer` agent,
 one per posting. The quality gate goes to the `verifier` agent, one per packet, after its writer
-is done. Spawn them with the Agent tool so job descriptions and drafts stay out of the main
+is done. Form filling goes to `filler` agents, one per approved form, in parallel. Spawn them with the Agent tool so job descriptions and drafts stay out of the main
 session's context. Everything that talks to the candidate (questions, forms, the tracker) stays in
 the main session; relay the agents' questions.
 
@@ -34,8 +34,9 @@ the main session; relay the agents' questions.
    `review.md`. List flagged packets separately with the reason.
 8. **Stop.** Ask which packets the candidate approves. Only then does `apply-assist` begin.
 9. **Batch the manual parts.** Before filling anything, read every approved form and ask all the
-   questions that need the candidate at once. Then fill each approved form and hand over once for
-   file attachments, bot checks and Submit.
+   questions that need the candidate at once. Then start one `filler` per approved form, each in
+   its own tab (see `apply-assist`, "Who does what"), and hand over once for file attachments,
+   consents, bot checks and Submit.
 
 Never skip the quality gate to save time, and never start a form without approval for that
 specific application.

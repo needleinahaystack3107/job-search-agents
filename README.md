@@ -28,7 +28,7 @@ data generator. Your own profile, job database, applications and traces stay in 
 ```
 
 - **HQ (main session).** The only part that talks to you. Runs the day, presents the review
-  queue, fills approved forms, records outcomes and your feedback.
+  queue, asks every form question up front, hands over once, records outcomes and your feedback.
 - **Discoverer** (`.claude/agents/discoverer.md`). Polls the watchlist through public Greenhouse,
   Lever and Ashby board APIs, runs the pre-filter and splits the shortlist into batches of about
   10, one company per batch. It reads no job descriptions.
@@ -43,7 +43,12 @@ data generator. Your own profile, job database, applications and traces stay in 
   - `humanize`: reads like you, not like a model; 8/10 or more.
   - `recruiter-read`: the ten-second skim; 7/10 or more, no unanswered must-have.
   - `ats-check`: builds the DOCX, checks it parses and carries the posting's exact terms.
-  Anything below the bar is flagged to you, never sent quietly.
+  Anything below the bar is flagged to you, never sent quietly. Requirements are sorted into
+  hard and soft: a small years gap, an interchangeable tool or a nice-to-have domain is a risk on
+  the scorecard, never a claim on the page.
+- **Fillers** (`.claude/agents/filler.md`). One per approved form, in parallel, each in its own
+  browser tab. They fill saved answers, read every field back, and stop before free text,
+  consents, file upload and Submit.
 - **Skills** live in `.claude/skills/`; `config/agents.json` maps them to agents.
 - **Trace and hooks.** Each skill logs start, end and handoff (with the quality it handed on) via
   `scripts/trace.py`. Claude Code hooks run `scripts/hook_trace.py` on every tool call and

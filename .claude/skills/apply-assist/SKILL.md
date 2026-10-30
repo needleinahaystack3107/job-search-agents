@@ -8,6 +8,16 @@ description: Fill in a job application form for a packet the candidate has appro
 Types the candidate's details into an employer's form, slowly, in a browser the candidate can see.
 It does not hide what it is, and it stops whenever a person is expected.
 
+## Who does what
+
+The main session talks to the candidate; `filler` agents (`.claude/agents/filler.md`) fill forms.
+The main session reads every approved form and asks all its questions in one sitting, then starts
+one `filler` per approved form in parallel (as many as the candidate wants at once). Each filler
+fills its own browser tab from saved answers, reads every field back, and returns what is left.
+The main session fills what the candidate answered (free text, ratings) and gives **one**
+handover for all tabs: resumes, consents, bot checks, Submit. For one short form the main session
+may fill it itself; a filler costs more tokens than it saves there.
+
 ## Trace
 
 `python3 scripts/trace.py start apply-assist --job <key>` when you open the form; `end apply-assist
