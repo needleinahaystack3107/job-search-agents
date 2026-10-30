@@ -169,7 +169,25 @@ function map(s){
     if(tl){h+=`<text class="tlab" x="0" y="${hh+24}">Now ${esc(doing(tl).slice(0,40))}</text>`;
       h+=`<circle r="4" fill="${KC[tl.kind]||KC.other}" style="filter:drop-shadow(0 0 6px ${KC[tl.kind]||"#6f8"})"><animateMotion dur="2s" repeatCount="indefinite" path="M-6,-6 H${w+6} V${hh+6} H-6 Z"/></circle>`}
     h+="</g>"});
-  $("map").innerHTML=h}
+  $("map").innerHTML=h;declutter($("map"))}
+
+// Keep map labels off the agent boxes and off each other: try small vertical shifts, then
+// put a dark backing under each label so crossing route lines stay readable.
+function declutter(svg){
+  const cw=svg.getBoundingClientRect().width;if(!cw)return;
+  const k=svg.viewBox.baseVal.width/cw,pad=3;
+  const hit=(a,b)=>a.left<b.right+pad&&a.right>b.left-pad&&a.top<b.bottom+pad&&a.bottom>b.top-pad;
+  const boxes=[...svg.querySelectorAll("g.unit rect.box")].map(r=>r.getBoundingClientRect());
+  const placed=[];
+  const shifts=[0,-14,14,-28,28,-42,42,-56,56,-70,70];
+  svg.querySelectorAll("text.rlab, text.tlab").forEach(t=>{
+    const r=t.getBoundingClientRect(),y0=+t.getAttribute("y");
+    const own=t.closest("g.unit")?.querySelector("rect.box")?.getBoundingClientRect();
+    for(const d of shifts){const dy=d/k,c={left:r.left,right:r.right,top:r.top+dy,bottom:r.bottom+dy};
+      if(!boxes.some(b=>b!==own&&hit(c,b))&&!(own&&hit(c,own))&&!placed.some(p=>hit(c,p))){t.setAttribute("y",y0+d);placed.push(c);break}}
+    const bb=t.getBBox(),bg=document.createElementNS("http://www.w3.org/2000/svg","rect");
+    bg.setAttribute("x",bb.x-3);bg.setAttribute("y",bb.y-1);bg.setAttribute("width",bb.width+6);bg.setAttribute("height",bb.height+2);
+    bg.setAttribute("fill","var(--bg)");bg.setAttribute("opacity",".85");t.parentNode.insertBefore(bg,t)})}
 
 function lanes(s){
   const T=s.tools||{tail:[],active_tools:[]},W=1000,H=190,L=110,R=16,top=12,lh=Math.floor((H-top-14)/LANES.length),span=10*60e3,now=Date.now();
