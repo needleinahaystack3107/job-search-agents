@@ -79,6 +79,8 @@ td{padding:5px 6px;border-bottom:1px dashed var(--grid);vertical-align:top;color
   <section class="p span8"><h2>TACTICAL MAP <span>AGENTS &amp; HANDOFFS · LIVE</span></h2><svg id="map" viewBox="0 0 800 430"></svg></section>
   <section class="p span4"><h2>COMMS LOG <span id="evc">0 EVENTS</span></h2><div class="log" id="log"></div></section>
 
+  <section class="p span12"><h2>OPS FUNNEL <span>RECON → DEPLOY → OUTCOME · ALL TIME</span></h2><svg id="funnel" viewBox="0 0 1000 250"></svg><div class="note" id="fnote"></div></section>
+
   <section class="p span12"><h2>SIGNAL TRACE <span id="sigspan">TOOL CALLS · LAST 10 MIN</span></h2><div style="margin:-2px 0 6px">Right now: <span class="now" id="nowexec">—</span></div><svg id="lanes" viewBox="0 0 1000 190"></svg><div class="legend" id="legend"></div></section>
 
   <section class="p span6"><h2>SORTIE HISTORY <span>APPLICATIONS / DAY · 28D</span></h2><svg id="hist" viewBox="0 0 560 150"></svg></section>
@@ -190,6 +192,25 @@ function lanes(s){
   $("nowexec").textContent=parts.length?parts.join(" · "):"Nothing is running.";
   $("legend").innerHTML=Object.entries(KC).map(([k,c])=>`<span><i style="background:${c}"></i>${KIND[k]}</span>`).join("")+'<span><i style="background:var(--amber)"></i>Helper started</span><span><i style="background:#ff7ad9"></i>Helper finished</span>'}
 
+function funnelPanel(f){
+  if(!f){$("funnel").innerHTML="";return}
+  const W=1000,L=270,R=150,top=8,rh=26,mx=Math.log10(Math.max(f.discovered||1,10));
+  const st=[["RECON","Postings found",f.discovered],["IN THEATER","In your locations and rules",f.in_range],["ASSESSED","Scored in full",f.scored],["TARGETS","Scored 60 or more",f.shortlisted],["PACKETS","Resumes built and checked",f.packets],["DEPLOYED","Applications sent",f.submitted],["CONFIRMED","Receipt or reply seen",f.acknowledged]];
+  let h="",prev=null;
+  st.forEach(([code,lab,n],i)=>{const y=top+i*rh,w=Math.max(4,(W-L-R)*Math.log10(Math.max(n,1)+1)/(mx+.05)),x=L+((W-L-R)-w)/2;
+    const conv=prev?` ${Math.round(100*n/Math.max(prev,1))}%`:"";
+    h+=`<text x="8" y="${y+15}" fill="var(--ph)" font-size="12" font-weight="700" letter-spacing=".12em">${code}</text><text x="104" y="${y+15}" fill="var(--mute)" font-size="10">${lab}</text>`;
+    h+=`<rect x="${x}" y="${y+3}" width="${w}" height="${rh-8}" fill="${i>=5?"var(--ph)":"rgba(93,255,154,.35)"}" stroke="var(--ph)" style="filter:drop-shadow(0 0 3px #5dff9a)"><title>${lab}: ${n}</title></rect>`;
+    h+=`<text x="${W-R+12}" y="${y+15}" fill="var(--ph2)" font-size="13" font-weight="700">${n}</text><text x="${W-R+62}" y="${y+15}" fill="var(--dim)" font-size="10">${conv}</text>`;prev=n});
+  const y0=top+st.length*rh+10,tot=Math.max(f.submitted,1),seg=[["IN FLIGHT","pending",f.pending,"rgba(93,255,154,.45)"],["ENGAGED","interview",f.interview,"var(--ph)"],["VICTORY","offer",f.offer,"#49d6ff"],["REPULSED","rejected",f.rejected,"var(--amber)"],["DARK","no reply 30d+",f.no_response,"#6f8f7a"]];
+  h+=`<text x="8" y="${y0+15}" fill="var(--ph)" font-size="12" font-weight="700" letter-spacing=".12em">OUTCOMES</text><text x="104" y="${y0+15}" fill="var(--mute)" font-size="10">Of ${f.submitted} sent</text>`;
+  let x=L;seg.forEach(([code,lab,n,c])=>{if(!n)return;const w=(W-L-R)*n/tot;h+=`<rect x="${x}" y="${y0+3}" width="${w}" height="18" fill="${c}"><title>${lab}: ${n}</title></rect>`;if(w>60)h+=`<text x="${x+6}" y="${y0+16}" fill="#04140a" font-size="10" font-weight="700">${code} ${n}</text>`;x+=w});
+  h+=`<text x="${W-R+12}" y="${y0+15}" fill="var(--ph2)" font-size="13" font-weight="700">${Math.round(100*f.response_rate)}%</text><text x="${W-R+52}" y="${y0+15}" fill="var(--dim)" font-size="10">replied</text>`;
+  const ly=y0+34;seg.forEach(([code,lab,n,c],i)=>{const lx=L+i*118;h+=`<rect x="${lx}" y="${ly}" width="10" height="10" fill="${c}"/><text x="${lx+15}" y="${ly+9}" fill="var(--mute)" font-size="10">${code} ${n}</text>`});
+  $("funnel").innerHTML=h;
+  const g=f.by_gate||{},r=g.ready||{},o=g.override||{};
+  $("fnote").textContent=`Bars use a log scale so small stages stay visible; % is the share kept from the stage above. Passed the gate: ${r.sent||0} sent, ${r.rejected||0} rejected, ${r.interview||0} interviews. Sent on your override: ${o.sent||0} sent, ${o.rejected||0} rejected, ${o.interview||0} interviews.`}
+
 function hist(ap,t){
   const W=560,H=150,pad=22,n=ap.series.length,bw=(W-pad*2)/n,mx=Math.max(t+1,...ap.series.map(x=>x.n));let h="";
   for(let v=0;v<=mx;v++){const y=H-pad-(v/mx)*(H-pad*2);h+=`<line x1="${pad}" x2="${W-pad}" y1="${y}" y2="${y}" stroke="var(--grid)"/><text x="4" y="${y+3}" fill="var(--dim)" font-size="9">${v}</text>`}
@@ -223,7 +244,7 @@ function render(s){
   const row=(k,val,ok)=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-bottom:1px dashed var(--grid)"><span class="sub" style="color:var(--mute)">${k}</span><b style="font-size:12.5px;text-align:right" class="${ok===null?"":ok?"ok":"warn"}">${val}</b></div>`;
   const nd="not measured yet";
   $("guards").innerHTML=row("Untrue claims the checker had to fix",ff??nd,ff==null?null:ff<=g.fact_check_failures)+row(`Sounds like you (goal ${g.min_voice}+ of 10)`,vo??nd,vo==null?null:vo>=g.min_voice)+row(`Recruiter first impression (goal ${g.min_recruiter}+ of 10)`,rc??nd,rc==null?null:rc>=g.min_recruiter)+row("Sent even though the check flagged it",`${rk.sent_flagged} of ${rk.submitted}`,rk.sent_flagged<=rk.submitted/2)+`<div class="note">Green = holding the line. Amber = needs a look.</div>`;
-  map(s);lanes(s);hist(ap,t);
+  map(s);lanes(s);hist(ap,t);funnelPanel(s.funnel);
   const tail=s.trace_tail||[];$("evc").textContent=tail.length+(tail.length===1?" EVENT":" EVENTS");
   $("log").innerHTML=tail.slice().reverse().map((e,i)=>`<div class="${i<tail.length-seen?"new":""}"><span class="t">${esc(when(e.ts))}</span> ${esc(logLine(e))}</div>`).join("")||'<div class="n">Nothing yet. Each step the agents take will show up here in plain words.</div>';seen=tail.length;
   $("units").innerHTML="<table><tr><th>AGENT</th><th>TASKS DONE</th><th>MINUTES</th><th>PASSED ON</th><th>HOW GOOD WAS WHAT IT PASSED ON</th></tr>"+s.config.agents.map(a=>{const st=s.agents[a.id];const q=Object.fromEntries(Object.entries(st.quality).map(([k,x])=>[k.replace(/^verdict_/,"verdict_"),x.avg]));let txt=plain(q);if(st.quality.verdict_flagged)txt=(txt?txt+", ":"")+`${st.quality.verdict_flagged.n} flagged`;if(st.quality.verdict_ready)txt=(txt?txt+", ":"")+`${st.quality.verdict_ready.n} passed`;return`<tr><td>${NAME[a.id]}</td><td>${st.calls}</td><td>${st.minutes}</td><td>${st.handoffs}</td><td style="color:var(--cyan)">${esc(txt)||'<span style="color:var(--dim)">nothing measured yet</span>'}</td></tr>`}).join("")+"</table>";

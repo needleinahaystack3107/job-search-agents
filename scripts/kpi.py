@@ -205,6 +205,54 @@ def tool_activity(trace, minutes=30):
     }
 
 
+def funnel(rows, today):
+    """Whole-search funnel: store stages from jobs.db, outcomes from the application log."""
+    stages = {}
+    try:
+        con = sqlite3.connect(DB)
+        q = lambda sql: con.execute(sql).fetchone()[0]
+        stages["discovered"] = q("select count(*) from jobs")
+        stages["in_range"] = q("select count(*) from jobs where status not in ('excluded','closed')")
+        stages["scored"] = q("select count(*) from jobs where score is not null")
+        stages["shortlisted"] = q("select count(*) from jobs where score >= 60")
+        con.close()
+    except sqlite3.Error:
+        pass
+    apps_dir = os.path.join(ROOT, "applications")
+    stages["packets"] = sum(os.path.isdir(os.path.join(apps_dir, d)) for d in os.listdir(apps_dir)) if os.path.isdir(apps_dir) else 0
+
+    events = defaultdict(set)
+    sent_on, flagged = {}, set()
+    for r in rows:
+        events[r["key"]].add(r["event"])
+        if r["event"] == "submitted":
+            sent_on.setdefault(r["key"], r["date"])
+            if "flagged" in r.get("detail", ""):
+                flagged.add(r["key"])
+    sent = set(sent_on)
+    out = {o: sorted(k for k in sent if o in events[k]) for o in OUTCOMES}
+    closed = set().union(*out.values()) if out else set()
+    pending = sent - closed
+    stale = {k for k in pending if (today - datetime.date.fromisoformat(sent_on[k])).days > 30}
+    by_gate = {}
+    for name, keys in (("ready", sent - flagged), ("override", sent & flagged)):
+        by_gate[name] = {"sent": len(keys), "rejected": len(keys & set(out["rejected"])),
+                         "interview": len(keys & (set(out["interview"]) | set(out["offer"])))}
+    stages.update({
+        "submitted": len(sent),
+        "acknowledged": sum(1 for k in sent if "acknowledged" in events[k] or events[k] & set(OUTCOMES)),
+        "rejected": len(out["rejected"]),
+        "interview": len(out["interview"]),
+        "offer": len(out["offer"]),
+        "pending": len(pending - stale),
+        "no_response": len(stale),
+    })
+    responses = len(closed)
+    stages["response_rate"] = round(responses / len(sent), 3) if sent else 0
+    stages["by_gate"] = by_gate
+    return stages
+
+
 def snapshot(today=None):
     today = today or datetime.date.today()
     cfg = load_config()
@@ -219,6 +267,7 @@ def snapshot(today=None):
         "applications": apps,
         "ranking": ranking_quality(rows),
         "store": store_snapshot(),
+        "funnel": funnel(rows, today),
         "agents": agent_stats(trace, cfg),
         "active": active_skills(trace),
         "tools": tool_activity(trace),
